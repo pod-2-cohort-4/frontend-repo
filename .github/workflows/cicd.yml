@@ -60,11 +60,11 @@ jobs:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
       run: |
-         git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Favour-ibeh/Kubernetes-manifest.git
+         git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/pod-2-cohort-4/Kubernetes-manifest.git
          
          cd Kubernetes-manifest
-         git config --global user.email "ibehfavourbenson@gmail.com"
-         git config --global user.name "Favour-ibe"
+         git config --global user.email "mhilajoe@gmail.com"
+         git config --global user.name "skytechjonas"
 
          sed -i "s+${{ vars.ECR_REPO }}/bank-frontend:.*+${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}+g" ./bank-project/frontend.yaml
 
