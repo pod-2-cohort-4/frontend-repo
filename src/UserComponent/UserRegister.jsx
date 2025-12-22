@@ -46,7 +46,7 @@ const UserRegister = () => {
       jwtToken = sessionStorage.getItem("admin-jwtToken"); // Use admin's JWT token for bank register
     }
 
-    fetch("https://bankapi.favour-ibe.online/api/user/register", {
+    fetch("https://bankapi.pod2-c4.online.online/api/user/register", {
       method: "POST",
       headers: {
         Accept: "application/json",
