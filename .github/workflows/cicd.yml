@@ -42,41 +42,45 @@ jobs:
     runs-on: ubuntu-latest
     needs: Continues-Integration_build_and_push
     permissions:
-      contents: write   # REQUIRED to push
+      contents: write  # Required to push changes to repo
+
     steps:
       - name: Checkout Kubernetes manifest repo
         uses: actions/checkout@v4
         with:
           repository: pod-2-cohort-4/Kubernetes-manifest
-          token:  ${{ secrets.K8S_REPO_TOKEN }}
+          token: ${{ secrets.K8S_REPO_TOKEN }}
           path: Kubernetes-manifest
           fetch-depth: 1
-           
-     - name: Update image tag and push
-  run: |
-    cd Kubernetes-manifest
 
-    # Configure Git
-    git config user.email "ibehfavourbenson@gmail.com"
-    git config user.name "Favour-ibe"
+      - name: Update image tag and push
+        run: |
+          cd Kubernetes-manifest
 
-    # Update the frontend image tag in the manifest
-    sed -i "s+${{ vars.ECR_REPO }}/bank-frontend:.*+${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}+g" \
-      bank-project/frontend.yaml
+          # Configure Git
+          git config user.email "ibehfavourbenson@gmail.com"
+          git config user.name "Favour-ibe"
 
-    # Verify the update safely
-    if grep -q "${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}" bank-project/frontend.yaml; then
-      echo "Image tag updated successfully!"
-    else
-      echo "Warning: Image tag not found in manifest"
-    fi
+          # Update frontend image tag in the manifest
+          sed -i "s+${{ vars.ECR_REPO }}/bank-frontend:.*+${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}+g" \
+            bank-project/frontend.yaml
 
-    # Commit only if there are changes
-    if git diff --quiet bank-project/frontend.yaml; then
-      echo "No changes detected, skipping commit."
-    else
-      git add bank-project/frontend.yaml
-      git commit -m "Update frontend image to version ${{ github.run_number }}"
-      git push origin main
-    fi
+          # Verify the update safely
+          if grep -q "${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}" bank-project/frontend.yaml; then
+            echo "Image tag updated successfully!"
+          else
+            echo "Warning: Image tag not found in manifest"
+          fi
+
+          # Commit and push only if there are changes
+          if git diff --quiet bank-project/frontend.yaml; then
+            echo "No changes detected, skipping commit."
+          else
+            git add bank-project/frontend.yaml
+            git commit -m "Update frontend image to version ${{ github.run_number }}"
+            git push origin main
+          fi
+
+
+
  
