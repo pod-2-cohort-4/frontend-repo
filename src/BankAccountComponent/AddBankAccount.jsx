@@ -27,7 +27,7 @@ const AddBankAccount = () => {
   };
 
   const saveAccount = (e) => {
-    fetch("https://bankapi.pod2-c4.online.online/api/bank/account/add", {
+    fetch("https://bankapi.pod2-c4.online/api/bank/account/add", {
       method: "POST",
       headers: {
         Accept: "application/json",
