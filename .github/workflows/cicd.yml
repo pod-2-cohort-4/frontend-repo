@@ -66,5 +66,5 @@ jobs:
             bank-project/frontend.yaml
 
           git add bank-project/frontend.yaml
-          git commit -m "Update frontend image to version ${{ github.run_number }}"
+          git commit -m "Update frontend image to version 10" || echo "No changes to commit"
           git push origin main
