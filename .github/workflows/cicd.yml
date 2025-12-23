@@ -52,19 +52,31 @@ jobs:
           path: Kubernetes-manifest
           fetch-depth: 1
            
-      - name: Update image tag and push
-        run: |
-          cd Kubernetes-manifest
+     - name: Update image tag and push
+  run: |
+    cd Kubernetes-manifest
 
-          git config user.email "ibehfavourbenson@gmail.com"
-          git config user.name "Favour-ibe"
+    # Configure Git
+    git config user.email "ibehfavourbenson@gmail.com"
+    git config user.name "Favour-ibe"
 
-          sed -i "s+${{ vars.ECR_REPO }}/bank-frontend:.*+${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}+g" \
-            bank-project/frontend.yaml
+    # Update the frontend image tag in the manifest
+    sed -i "s+${{ vars.ECR_REPO }}/bank-frontend:.*+${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}+g" \
+      bank-project/frontend.yaml
 
-          grep -q "${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}" \
-            bank-project/frontend.yaml
+    # Verify the update safely
+    if grep -q "${{ vars.ECR_REPO }}/bank-frontend:${{ github.run_number }}" bank-project/frontend.yaml; then
+      echo "Image tag updated successfully!"
+    else
+      echo "Warning: Image tag not found in manifest"
+    fi
 
-          git add bank-project/frontend.yaml
-          git commit -m "Update frontend image to version 10" || echo "No changes to commit"
-          git push origin main
+    # Commit only if there are changes
+    if git diff --quiet bank-project/frontend.yaml; then
+      echo "No changes detected, skipping commit."
+    else
+      git add bank-project/frontend.yaml
+      git commit -m "Update frontend image to version ${{ github.run_number }}"
+      git push origin main
+    fi
+ 
